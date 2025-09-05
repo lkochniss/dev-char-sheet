@@ -146,6 +146,7 @@ function renderCharacter() {
 
 // Show skill tree for an attribute
 function showSkillTree(attr) {
+  document.getElementById("skill-detail-view").classList.add("hidden");
   document.getElementById("attributes").classList.add("hidden");
   document.getElementById("skill-view").classList.remove("hidden");
   document.getElementById("skill-headline").textContent = attr.name;
