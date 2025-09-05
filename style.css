@@ -152,3 +152,89 @@ button:hover {
   background-color: #4caf50;
   color: #121212;
 }
+
+/* Back Button Styling */
+.back-btn {
+  background-color: #333;
+  color: #e0e0e0;
+  border: none;
+  padding: 10px 16px;      /* größer für mobile Touch */
+  margin-bottom: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  float: right;            /* nach rechts schieben */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.back-btn:hover {
+  background-color: #4caf50;
+  color: #121212;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 600px) {
+  .back-btn {
+    padding: 8px 12px;      /* etwas kleiner auf kleinen Bildschirmen */
+    font-size: 0.9rem;
+  }
+
+  #skills, #attributes {
+    justify-content: center; /* zentriert Flexbox auf mobilen Geräten */
+  }
+
+  .attribute, .skill {
+    width: 140px;           /* kleinere Kacheln für mobile */
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 14px; /* etwas kleiner für kleine Displays */
+    line-height: 1.5;
+    margin: 10px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  .slots {
+    grid-template-columns: 60px 60px 60px; /* kleinere Slots */
+    grid-gap: 6px;
+  }
+
+  .slot svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .attribute, .skill {
+    width: 140px; /* kleinere Kacheln */
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  #character-level {
+    width: 90%; /* progress bar etwas breiter auf mobilen */
+  }
+
+  button.back-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  #skills, #attributes {
+    justify-content: center; /* zentriert Kacheln */
+    flex-wrap: wrap;
+  }
+}
