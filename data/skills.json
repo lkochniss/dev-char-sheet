@@ -1,0 +1,12 @@
+[
+  { "id": "9c858901-8a57-4791-81fe-4c455b099bc9", "name": "React", "attribute": "550e8400-e29b-41d4-a716-446655440000" },
+  { "id": "a1d53ed1-bf55-4f71-90a3-7a4ddf9e777d", "name": "Angular", "attribute": "550e8400-e29b-41d4-a716-446655440000" },
+  { "id": "660bf967-9497-4be9-959c-c6fcf92a1b50", "name": "Vue", "attribute": "550e8400-e29b-41d4-a716-446655440000" },
+  { "id": "00d82915-2ade-4196-8f8b-7a4ce91c1b96", "name": "Cypress", "attribute": "550e8400-e29b-41d4-a716-446655440000" },
+  { "id": "2e69549e-8118-4cc0-80e0-687a3ec59493", "name": "jQuery", "attribute": "550e8400-e29b-41d4-a716-446655440000" },
+  { "id": "e7d4d990-ab84-40fc-b49b-fe2d3c61eb22", "name": "Symfony", "attribute": "6fa459ea-ee8a-3ca4-894e-db77e160355e" },
+  { "id": "e244b658-d6fc-4feb-a8bf-f1dbb785995a", "name": "Behat", "attribute": "6fa459ea-ee8a-3ca4-894e-db77e160355e" },
+  { "id": "d71f26a1-679c-40f4-bb2c-0897a305f6e3", "name": "Docker", "attribute": "6e3e490d-d754-49b9-add6-09540a7a51ff" },
+  { "id": "803640be-dcd7-4936-b1ac-7b33db169b51", "name": "Kubernetes", "attribute": "6e3e490d-d754-49b9-add6-09540a7a51ff" },
+  { "id": "7e0c6007-4cfe-4e72-bee4-1821bd31265f", "name": "AWS", "attribute": "6e3e490d-d754-49b9-add6-09540a7a51ff" }
+]

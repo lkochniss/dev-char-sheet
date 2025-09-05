@@ -1,0 +1,115 @@
+body {
+  font-family: "Cinzel", serif;
+  background: #111;
+  color: #eee;
+  text-align: center;
+}
+
+h1, h2 {
+  margin: 1rem 0;
+}
+
+#main-view {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+#char-figure {
+  display: grid;
+  grid-template-areas:
+    ". head ."
+    "shoulders chest amulet"
+    "left-hand hands right-hand"
+    "ring1 belt ring2"
+    ". legs ."
+    ". feet .";
+  gap: 1rem;
+  margin: 2rem;
+  justify-content: center;
+}
+
+.slot {
+  border: 2px solid #666;
+  border-radius: 8px;
+  background: #222 no-repeat center;
+  background-size: 60%;
+  width: 100px;
+  height: 100px;
+  text-indent: -9999px;
+}
+
+.head       { grid-area: head; background-image: url("icons/helm.svg"); }
+.shoulders  { grid-area: shoulders; background-image: url("icons/shoulders.svg"); }
+.chest      { grid-area: chest; background-image: url("icons/chest.svg"); }
+.hands      { grid-area: hands; background-image: url("icons/gloves.svg"); }
+.left-hand  { grid-area: left-hand; background-image: url("icons/shield.svg"); }
+.right-hand { grid-area: right-hand; background-image: url("icons/sword.svg"); }
+.legs       { grid-area: legs; background-image: url("icons/legs.svg"); }
+.feet       { grid-area: feet; background-image: url("icons/boots.svg"); }
+.belt       { grid-area: belt; background-image: url("icons/belt.svg"); }
+.amulet     { grid-area: amulet; background-image: url("icons/amulet.svg"); }
+.ring1      { grid-area: ring1; background-image: url("icons/ring.svg"); }
+.ring2      { grid-area: ring2; background-image: url("icons/ring.svg"); }
+
+.attribute {
+  border: 2px solid #666;
+  border-radius: 8px;
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+  max-width: 200px;
+  background: #222;
+  cursor: pointer;
+  margin-top: 2rem;
+}
+
+.attribute:hover {
+  background: #333;
+}
+
+.progress {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 5px;
+  height: 12px;
+  width: 100%;
+  margin: 0.3rem 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+#skills .skill {
+  border: 1px solid #444;
+  border-radius: 6px;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  background: #222;
+}
+
+#character-level {
+  max-width: 200px;
+  margin: 2rem auto;
+}
+
+.progress {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 5px;
+  height: 12px;
+  width: 100%;
+  margin: 0.3rem 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  height: 100%;
+}
