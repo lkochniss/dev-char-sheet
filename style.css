@@ -1,12 +1,13 @@
+/* Dark Mode */
 body {
-  font-family: "Cinzel", serif;
-  background: #111;
-  color: #eee;
-  text-align: center;
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: Arial, sans-serif;
+  margin: 20px;
 }
 
-h1, h2 {
-  margin: 1rem 0;
+h1, h2, h3 {
+  text-align: center;
 }
 
 #main-view {
@@ -52,64 +53,98 @@ h1, h2 {
 .ring1      { grid-area: ring1; background-image: url("icons/ring.svg"); }
 .ring2      { grid-area: ring2; background-image: url("icons/ring.svg"); }
 
-.attribute {
-  border: 2px solid #666;
-  border-radius: 8px;
-  margin: 0.5rem auto;
-  padding: 0.5rem;
-  max-width: 200px;
-  background: #222;
-  cursor: pointer;
-  margin-top: 2rem;
-}
-
-.attribute:hover {
-  background: #333;
+/* Character Level */
+#character-level {
+  width: 60%;
+  margin: 0 auto 20px;
 }
 
 .progress {
-  background: #333;
-  border: 1px solid #555;
-  border-radius: 5px;
-  height: 12px;
-  width: 100%;
-  margin: 0.3rem 0;
+  background-color: #333;
+  border-radius: 8px;
+  height: 16px;
   overflow: hidden;
 }
 
 .progress-fill {
-  background: linear-gradient(90deg, #4caf50, #81c784);
+  background-color: #4caf50;
   height: 100%;
+  width: 0%;
+  transition: width 0.5s;
+}
+
+/* Attributes Section */
+#attributes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.attribute {
+  background-color: #1e1e1e;
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+  width: 160px;
+  cursor: pointer;
+}
+
+.attribute:hover {
+  border-color: #4caf50;
+}
+
+/* Skill Tree */
+#skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.skill {
+  background-color: #1e1e1e;
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 8px;
+  width: 140px;
+  cursor: pointer;
+}
+
+.skill:hover {
+  border-color: #4caf50;
+}
+
+/* Skill Details */
+.skill-period {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+}
+
+.dates {
+  font-weight: bold;
+}
+
+.company {
+  font-style: italic;
 }
 
 .hidden {
   display: none;
 }
 
-#skills .skill {
-  border: 1px solid #444;
+button {
+  background-color: #333;
+  color: #e0e0e0;
+  border: none;
+  padding: 6px 12px;
+  margin-bottom: 10px;
   border-radius: 6px;
-  margin: 0.5rem;
-  padding: 0.5rem;
-  background: #222;
+  cursor: pointer;
 }
 
-#character-level {
-  max-width: 200px;
-  margin: 2rem auto;
-}
-
-.progress {
-  background: #333;
-  border: 1px solid #555;
-  border-radius: 5px;
-  height: 12px;
-  width: 100%;
-  margin: 0.3rem 0;
-  overflow: hidden;
-}
-
-.progress-fill {
-  background: linear-gradient(90deg, #4caf50, #81c784);
-  height: 100%;
+button:hover {
+  background-color: #4caf50;
+  color: #121212;
 }

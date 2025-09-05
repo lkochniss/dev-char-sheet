@@ -6,7 +6,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1 id="headline">My Developer Character Sheet</h1>
+
+<h1>Developer Character Sheet</h1>
 
 
   <div id="character-level"></div>
@@ -26,15 +27,42 @@
       <div class="slot ring2">Ring 2</div>
     </div>
 
-    <div id="attributes"></div>
+  <div class="slot">
+    <svg width="50" height="50" viewBox="0 0 64 64">
+      <rect x="18" y="60" width="10" height="4" fill="#888"/>
+      <rect x="36" y="60" width="10" height="4" fill="#888"/>
+    </svg>
+    <div>Feet</div>
   </div>
 
-  <div id="skill-view" class="hidden">
-    <button id="back-btn">← Back</button>
-    <h2 id="skill-headline"></h2>
-    <div id="skills"></div>
+  <div class="slot">
+    <svg width="50" height="50" viewBox="0 0 64 64">
+      <rect x="14" y="16" width="36" height="6" fill="#aaa" stroke="#333" stroke-width="1"/>
+    </svg>
+    <div>Shoulders</div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<!-- Character Level -->
+<div id="character-level"></div>
+
+<!-- Attributes -->
+<h2>Attributes</h2>
+<div id="attributes"></div>
+
+<!-- Skill View -->
+<div id="skill-view" class="hidden">
+  <button id="back-btn">Back</button>
+  <h3 id="skill-headline"></h3>
+  <div id="skills"></div>
+</div>
+
+<!-- Skill Detail View -->
+<div id="skill-detail-view" class="hidden">
+  <button id="back-skill-btn">Back</button>
+  <div id="skill-detail"></div>
+</div>
+
+<script src="script.js" defer></script>
 </body>
 </html>
