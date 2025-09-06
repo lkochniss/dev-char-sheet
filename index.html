@@ -9,9 +9,9 @@
 
 <h1>Developer Character Sheet</h1>
 
-
-  <div id="character-level"></div>
-  <div id="main-view">
+<div id="main-view">
+  <!-- Linke Seite: Charakter -->
+  <div id="char-column">
     <div id="char-figure">
       <div class="slot head">Head</div>
       <div class="slot shoulders">Shoulders</div>
@@ -26,26 +26,32 @@
       <div class="slot ring1">Ring 1</div>
       <div class="slot ring2">Ring 2</div>
     </div>
-</div>
 
-<!-- Character Level -->
-<div id="character-level"></div>
+    <!-- Character Level -->
+    <div id="character-level"></div>
+  </div>
 
-<!-- Attributes -->
-<h2>Attributes</h2>
-<div id="attributes"></div>
+  <!-- Rechte Seite: Attribute & Skills -->
+  <div id="info-column">
+    <div id="attributes-container">
+      <h2>Attributes</h2>
+      <div id="attributes"></div>
+    </div>
 
-<!-- Skill View -->
-<div id="skill-view" class="hidden">
-  <button id="back-btn">Back</button>
-  <h3 id="skill-headline"></h3>
-  <div id="skills"></div>
-</div>
+    <!-- Skill View -->
+    <div id="skill-view" class="hidden">
+      <button id="back-btn">Back</button>
+      <h2>Skills</h2>
+      <h3 id="skill-headline"></h3>
+      <div id="skills"></div>
+    </div>
 
-<!-- Skill Detail View -->
-<div id="skill-detail-view" class="hidden">
-  <button id="back-skill-btn">Back</button>
-  <div id="skill-detail"></div>
+    <!-- Skill Detail View -->
+    <div id="skill-detail-view" class="hidden">
+      <button id="back-skill-btn">Back</button>
+      <div id="skill-detail"></div>
+    </div>
+  </div>
 </div>
 
 <script src="script.js" defer></script>

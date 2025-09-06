@@ -8,110 +8,101 @@ let attributes = [];
 let skills = [];
 let experience = {};
 let companies = {};
-
 let characterLevel = 0;
 
-// Utility: parse date string to Date
+// Parse date string
 function parseDate(dateStr) {
   if (!dateStr) return new Date();
-  return new Date(dateStr);
+  const d = new Date(dateStr);
+  return isNaN(d) ? new Date() : d;
 }
 
-// Load all JSONs
+// Create a progress bar element (0..100)
+function createProgressBar(percent) {
+  const safePct = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) : 0;
+  const wrap = document.createElement("div");
+  wrap.className = "progress-container";
+  const fill = document.createElement("div");
+  fill.className = "progress-bar";
+  fill.style.width = safePct + "%";
+  wrap.appendChild(fill);
+  return wrap;
+}
+
+// Load data
 async function loadData() {
-  const [attrRes, skillRes, expRes, compRes] = await Promise.all([
-    fetch(ATTRIBUTES_JSON),
-    fetch(SKILLS_JSON),
-    fetch(EXPERIENCE_JSON),
-    fetch(COMPANIES_JSON)
-  ]);
+  try {
+    const [attrRes, skillRes, expRes, compRes] = await Promise.all([
+      fetch(ATTRIBUTES_JSON),
+      fetch(SKILLS_JSON),
+      fetch(EXPERIENCE_JSON),
+      fetch(COMPANIES_JSON)
+    ]);
+    attributes = await attrRes.json();
+    skills = await skillRes.json();
+    experience = await expRes.json();
+    const companyArray = await compRes.json();
+    companies = {};
+    (companyArray || []).forEach(c => companies[c.id] = c);
 
-  attributes = await attrRes.json();
-  skills = await skillRes.json();
-  experience = await expRes.json();
-  
-  const companyArray = await compRes.json();
-  companies = {};
-  companyArray.forEach(c => {
-    companies[c.id] = c;
-  });
-
-  calculateLevels();
-  renderCharacter();
+    calculateLevels();
+    renderCharacter();
+    setupBackButtons();
+  } catch (err) {
+    console.error("Failed to load data:", err);
+  }
 }
-function calculateLevels() {
-  // Reset attribute levels
-  attributes.forEach(attr => {
-    attr.level = 0;
-    attr.exp = 0;
-  });
 
+// Calculate levels
+function calculateLevels() {
+  attributes.forEach(attr => { attr.level = 0; attr.exp = 0; attr.progress = 0; });
   let allPeriods = [];
 
-  // Helper: merge overlapping periods
   function mergePeriods(periods) {
-    if (periods.length === 0) return [];
-    // sort by start date
-    periods.sort((a, b) => a.from - b.from);
-    const merged = [periods[0]];
-    for (let i = 1; i < periods.length; i++) {
-      const last = merged[merged.length - 1];
-      if (periods[i].from <= last.to) {
-        // overlap: extend the end date
-        last.to = new Date(Math.max(last.to, periods[i].to));
-      } else {
-        merged.push({...periods[i]});
-      }
+    if (!periods || periods.length === 0) return [];
+    const arr = periods.map(p => ({ from: p.from, to: p.to })).sort((a, b) => a.from - b.from);
+    const merged = [ { from: arr[0].from, to: arr[0].to } ];
+    for (let i=1;i<arr.length;i++) {
+      const last = merged[merged.length-1];
+      if (arr[i].from <= last.to) last.to = new Date(Math.max(last.to, arr[i].to));
+      else merged.push({ from: arr[i].from, to: arr[i].to });
     }
     return merged;
   }
 
-  // Process each attribute
+  // Attributes
   attributes.forEach(attr => {
-    let periods = [];
-
-    // Add attribute's own periods
-    (experience.attribute[attr.id] || []).forEach(p => {
-      periods.push({from: parseDate(p.from), to: parseDate(p.to)});
+    const periods = [];
+    (experience.attribute && experience.attribute[attr.id] || []).forEach(p => {
+      periods.push({ from: parseDate(p.from), to: parseDate(p.to) });
     });
-
-    // Add periods from skills of this attribute
-    skills.filter(s => s.attribute === attr.id).forEach(skill => {
-      (experience.skill[skill.id] || []).forEach(p => {
-        periods.push({from: parseDate(p.from), to: parseDate(p.to)});
+    skills.filter(s => s.attribute===attr.id).forEach(skill => {
+      (experience.skill && experience.skill[skill.id] || []).forEach(p => {
+        periods.push({ from: parseDate(p.from), to: parseDate(p.to) });
       });
     });
 
-    // Merge overlapping periods
     const merged = mergePeriods(periods);
-
-    // Calculate total experience in years
     let totalYears = 0;
-    merged.forEach(p => {
-      totalYears += (p.to - p.from) / (1000 * 60 * 60 * 24 * 365.25);
-      allPeriods.push(p); // for character level
-    });
-
+    merged.forEach(p => { if(p.from && p.to && p.to>p.from){ totalYears += (p.to-p.from)/(1000*60*60*24*365.25); allPeriods.push({from:p.from,to:p.to}); }});
     attr.exp = totalYears;
     attr.level = Math.floor(totalYears);
     attr.progress = totalYears - attr.level;
   });
 
-  // Character level: merge all periods to avoid double counting
+  // Character level
   const mergedAll = mergePeriods(allPeriods);
   let totalCharYears = 0;
-  mergedAll.forEach(p => {
-    totalCharYears += (p.to - p.from) / (1000 * 60 * 60 * 24 * 365.25);
-  });
+  mergedAll.forEach(p => { if(p.from && p.to && p.to>p.from) totalCharYears += (p.to-p.from)/(1000*60*60*24*365.25); });
   characterLevel = totalCharYears;
 
-  // Calculate skill levels individually (ignore overlap)
+  // Skill levels
   skills.forEach(skill => {
     let totalExp = 0;
-    (experience.skill[skill.id] || []).forEach(p => {
+    (experience.skill && experience.skill[skill.id] || []).forEach(p => {
       const from = parseDate(p.from);
       const to = parseDate(p.to);
-      totalExp += (to - from) / (1000 * 60 * 60 * 24 * 365.25);
+      if(from && to && to>from) totalExp += (to-from)/(1000*60*60*24*365.25);
     });
     skill.exp = totalExp;
     skill.level = Math.floor(totalExp);
@@ -119,93 +110,157 @@ function calculateLevels() {
   });
 }
 
-
-// Render character slots, attributes, and level
+// Render character, attributes, skills
 function renderCharacter() {
   const charLevelDiv = document.getElementById("character-level");
-  charLevelDiv.innerHTML = `
-    <strong>Character Level:</strong> ${Math.floor(characterLevel)}
-    <div class="progress"><div class="progress-fill" style="width:${(characterLevel % 1) * 100}%"></div></div>
-  `;
+  if(!charLevelDiv) return;
+  charLevelDiv.innerHTML = "";
+  const h2 = document.createElement("h2");
+  h2.textContent = "Character Level";
+  charLevelDiv.appendChild(h2);
+  charLevelDiv.appendChild(createProgressBar((characterLevel%1)*100));
+  const levelText = document.createElement("div");
+  levelText.id="level-text";
+  levelText.textContent = `Level ${Math.floor(characterLevel)}`;
+  charLevelDiv.appendChild(levelText);
 
+  // Attributes
   const attrContainer = document.getElementById("attributes");
-  attrContainer.innerHTML = "";
-  attributes.forEach(attr => {
-    const div = document.createElement("div");
-    div.className = "attribute";
-    div.textContent = `${attr.name} (Level ${attr.level})`;
-    const prog = document.createElement("div");
-    prog.className = "progress";
-    prog.innerHTML = `<div class="progress-fill" style="width:${attr.progress * 100}%"></div>`;
-    div.appendChild(prog);
-
-    div.addEventListener("click", () => showSkillTree(attr));
-    attrContainer.appendChild(div);
+  attrContainer.innerHTML="";
+  attributes.forEach(attr=>{
+    const card = document.createElement("div");
+    card.className="attribute";
+    card.textContent=`${attr.name} (Level ${attr.level})`;
+    card.appendChild(createProgressBar(attr.progress*100));
+    card.addEventListener("click",()=>showSkillTree(attr));
+    attrContainer.appendChild(card);
   });
+
+  // Skill + Detail Views abhängig von Bildschirmbreite
+  const skillView = document.getElementById("skill-view");
+  const skillDetailView = document.getElementById("skill-detail-view");
+
+  if (window.innerWidth < 769) {
+    skillView.classList.add("hidden");
+  } else {
+    skillView.classList.remove("hidden");
+  }
+  skillDetailView.classList.add("hidden");
 }
 
-// Show skill tree for an attribute
-function showSkillTree(attr) {
-  document.getElementById("skill-detail-view").classList.add("hidden");
-  document.getElementById("attributes").classList.add("hidden");
-  document.getElementById("skill-view").classList.remove("hidden");
-  document.getElementById("skill-headline").textContent = attr.name;
+// Show skills
+function showSkillTree(attr){
+  const skillView = document.getElementById("skill-view");
+  const attrContainer = document.getElementById("attributes");
+  const detailView = document.getElementById("skill-detail-view"); // NEU
+  const isDesktop = window.innerWidth >= 769;
 
-  const skillContainer = document.getElementById("skills");
-  skillContainer.innerHTML = "";
+  // Skill-Details immer schließen, wenn ein neues Attribut geöffnet wird
+  detailView.classList.add("hidden"); // NEU
 
-  const attrSkills = skills.filter(s => s.attribute === attr.id);
-  attrSkills.forEach(skill => {
-    const div = document.createElement("div");
-    div.className = "skill";
-    div.textContent = `${skill.name} (Level ${skill.level})`;
+  // Aktives Attribut hervorheben
+  document.querySelectorAll(".attribute").forEach(a=>a.classList.remove("active-attribute"));
+  const card = Array.from(attrContainer.children).find(c=>c.textContent.startsWith(attr.name));
+  if(card) card.classList.add("active-attribute");
 
-    const prog = document.createElement("div");
-    prog.className = "progress";
-    prog.innerHTML = `<div class="progress-fill" style="width:${skill.progress * 100}%"></div>`;
-    div.appendChild(prog);
+  if(isDesktop){
+    attrContainer.classList.remove("hidden");
+    skillView.classList.remove("hidden");
+    document.getElementById("skill-headline").textContent="";
+  } else {
+    attrContainer.classList.add("hidden");
+    skillView.classList.remove("hidden");
+    document.getElementById("skill-headline").textContent=attr.name;
+  }
 
-    div.addEventListener("click", () => showSkillDetail(skill));
+  // Skills aufbauen
+  const skillContainer=document.getElementById("skills");
+  skillContainer.innerHTML="";
+  skills.filter(s=>s.attribute===attr.id).forEach(skill=>{
+    const div=document.createElement("div");
+    div.className="skill";
+    div.textContent=`${skill.name} (Level ${skill.level})`;
+    div.appendChild(createProgressBar(skill.progress*100));
+    div.addEventListener("click",()=>showSkillDetail(skill));
     skillContainer.appendChild(div);
   });
 }
 
-// Show skill details with periods and companies
-function showSkillDetail(skill) {
+function formatMonthYear(dateStr) {
+  if (!dateStr) return "N/A";
+  const d = new Date(dateStr);
+  if (isNaN(d)) return "N/A";
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${month}.${year}`;
+}
+
+function showSkillDetail(skill){
   document.getElementById("skill-view").classList.add("hidden");
-  const detailView = document.getElementById("skill-detail-view");
+  const detailView=document.getElementById("skill-detail-view");
   detailView.classList.remove("hidden");
 
-  const container = document.getElementById("skill-detail");
-  container.innerHTML = `<h3>${skill.name} Details</h3>`;
+  const container=document.getElementById("skill-detail");
+  container.innerHTML="";
+  const h=document.createElement("h3");
+  h.textContent=`${skill.name} Details`;
+  container.appendChild(h);
 
   const periods = experience.skill[skill.id] || [];
-  periods.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "skill-period";
+  if(periods.length===0){ 
+    container.appendChild(document.createElement("div")).textContent="No recorded periods."; 
+    return; 
+  }
 
-    const from = p.from || "N/A";
-    const to = p.to || "Present";
-    const companyName = companies[p.company] ? companies[p.company].name : "Unknown";
+  periods.forEach(p=>{
+    const row=document.createElement("div"); 
+    row.className="skill-period";
 
-    div.innerHTML = `
-      <span class="dates">${from} → ${to}</span>
-      <span class="company">${companyName}</span>
-    `;
-    container.appendChild(div);
+    const from = formatMonthYear(p.from);
+    const to = p.to ? formatMonthYear(p.to) : "Present";
+    const left=document.createElement("span"); 
+    left.className="dates"; 
+    left.textContent=`${from} → ${to}`;
+
+    const right=document.createElement("span"); 
+    right.className="company"; 
+    right.textContent=companies[p.company] ? ` @ ${companies[p.company].name}` : " @ Unknown";
+
+    row.appendChild(left); 
+    row.appendChild(right); 
+    container.appendChild(row);
   });
 }
 
+// Back buttons
+function setupBackButtons(){
+  const backBtn=document.getElementById("back-btn");
+  const backSkillBtn=document.getElementById("back-skill-btn");
 
-// Back button handlers
-document.getElementById("back-btn").addEventListener("click", () => {
-  document.getElementById("skill-view").classList.add("hidden");
-  document.getElementById("attributes").classList.remove("hidden");
-});
+  if(backBtn){
+    function updateBackBtnVisibility(){
+      backBtn.style.display = window.innerWidth>=769?"none":"inline-block";
+    }
+    updateBackBtnVisibility();
+    window.addEventListener("resize",updateBackBtnVisibility);
+    backBtn.onclick=()=>{ document.getElementById("skill-view").classList.add("hidden"); document.getElementById("attributes").classList.remove("hidden"); };
+  }
 
-document.getElementById("back-skill-btn").addEventListener("click", () => {
-  document.getElementById("skill-detail-view").classList.add("hidden");
-  document.getElementById("skill-view").classList.remove("hidden");
+  if(backSkillBtn){
+    backSkillBtn.style.display="inline-block";
+    backSkillBtn.onclick=()=>{
+      document.getElementById("skill-detail-view").classList.add("hidden");
+      document.getElementById("skill-view").classList.remove("hidden"); // 👈 auch Desktop wieder sichtbar
+    };
+  }
+}
+
+// Resize handler for mobile/desktop
+window.addEventListener("resize",()=>{
+  if(window.innerWidth<769){
+    document.getElementById("skill-view").classList.add("hidden");
+    document.getElementById("attributes").classList.remove("hidden");
+  }
 });
 
 // Initialize
