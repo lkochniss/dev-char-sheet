@@ -151,7 +151,7 @@ function renderCharacter() {
 // Show skills
 function showSkillTree(attr){
   const skillView = document.getElementById("skill-view");
-  const attrContainer = document.getElementById("attributes");
+  const attrContainer = document.getElementById("attributes-container");
   const detailView = document.getElementById("skill-detail-view"); // NEU
   const isDesktop = window.innerWidth >= 769;
 
@@ -166,11 +166,12 @@ function showSkillTree(attr){
   if(isDesktop){
     attrContainer.classList.remove("hidden");
     skillView.classList.remove("hidden");
-    document.getElementById("skill-headline").textContent="";
   } else {
     attrContainer.classList.add("hidden");
     skillView.classList.remove("hidden");
-    document.getElementById("skill-headline").textContent=attr.name;
+    if(!isDesktop){
+      document.getElementById("skill-headline").textContent = `${attr.name} Skills`;
+    }
   }
 
   // Skills aufbauen
@@ -243,7 +244,7 @@ function setupBackButtons(){
     }
     updateBackBtnVisibility();
     window.addEventListener("resize",updateBackBtnVisibility);
-    backBtn.onclick=()=>{ document.getElementById("skill-view").classList.add("hidden"); document.getElementById("attributes").classList.remove("hidden"); };
+    backBtn.onclick=()=>{ document.getElementById("skill-view").classList.add("hidden"); document.getElementById("attributes-container").classList.remove("hidden"); };
   }
 
   if(backSkillBtn){
@@ -255,13 +256,24 @@ function setupBackButtons(){
   }
 }
 
-// Resize handler for mobile/desktop
-window.addEventListener("resize",()=>{
-  if(window.innerWidth<769){
-    document.getElementById("skill-view").classList.add("hidden");
-    document.getElementById("attributes").classList.remove("hidden");
+function updateViewByWidth() {
+  const isMobile = window.innerWidth < 769;
+  const skillView = document.getElementById("skill-view");
+  const attributes = document.getElementById("attributes-container");
+
+  if (isMobile) {
+    skillView.classList.add("hidden");
+    attributes.classList.remove("hidden");
+  } else {
+    // Desktop: CSS regelt Sichtbarkeit, JS muss nichts setzen
+    skillView.classList.remove("hidden"); 
+    attributes.classList.remove("hidden");
   }
-});
+}
+
+// Beim Laden
+window.addEventListener("load", updateViewByWidth);
+window.addEventListener("resize", updateViewByWidth);
 
 // Initialize
 loadData();
