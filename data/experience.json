@@ -46,7 +46,8 @@
     ],
     "a1d53ed1-bf55-4f71-90a3-7a4ddf9e777d": [
       { "from": "2018-07-01", "to": "2019-06-30",  "company": "a14fb2a4-6d9b-4e03-9fb4-5ca51d475702" },
-      { "from": "2020-02-01", "to": "2021-06-30",  "company": "d68ec6c1-eb3f-4b75-bb8c-9951a2ab926f" }
+      { "from": "2020-02-01", "to": "2021-06-30",  "company": "d68ec6c1-eb3f-4b75-bb8c-9951a2ab926f" },
+      { "from": "2026-03-01", "to": null,  "company": "8136c96b-b7fa-4a6f-a8f0-9aeb2be7f33e" }
     ],
     "00d82915-2ade-4196-8f8b-7a4ce91c1b96": [
       { "from": "2018-07-01", "to": "2019-06-30",  "company": "a14fb2a4-6d9b-4e03-9fb4-5ca51d475702" },
@@ -58,7 +59,7 @@
       { "from": "2024-12-01", "to": null,  "company": "8136c96b-b7fa-4a6f-a8f0-9aeb2be7f33e" }
     ],
     "9c858901-8a57-4791-81fe-4c455b099bc9": [
-      { "from": "2025-02-01", "to": null, "company": "8136c96b-b7fa-4a6f-a8f0-9aeb2be7f33e" }
+      { "from": "2025-02-01", "to": "2026-02-28", "company": "8136c96b-b7fa-4a6f-a8f0-9aeb2be7f33e" }
     ]
   }
 }
